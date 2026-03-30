@@ -1,0 +1,431 @@
+/* تحسين الشكل العام وجعله متجاوباً */
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    direction: rtl;
+    margin: 20px;
+    background-color: #f3f6f9;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input, select, button {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.export-import-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+    justify-content: center;
+}
+
+.export-import-buttons button {
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.export-import-buttons button:hover {
+    background-color: #218838;
+}
+
+.export-import-buttons button:disabled {
+    background-color: #6c757d;
+}
+
+/* تحسين شكل الجدول */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+}
+
+th {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+td {
+    background-color: #fff;
+}
+
+tr:nth-child(even) td {
+    background-color: #f9f9f9;
+}
+
+tr.past-booking td {
+    background-color: #f0f0f0;
+    color: #888;
+    text-decoration: line-through;
+}
+
+/* أزرار الجدول */
+td button {
+    padding: 5px 10px;
+    margin: 2px;
+    font-size: 0.9rem;
+    width: auto;
+}
+
+td button.edit {
+    background-color: #ffc107;
+    color: #333;
+}
+
+td button.edit:hover {
+    background-color: #e0a800;
+}
+
+td button.delete {
+    background-color: #dc3545;
+}
+
+td button.delete:hover {
+    background-color: #c82333;
+}
+
+/* حقل البحث */
+#search-input {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* الجدول الزمني (Timeline) */
+.timeline {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.slot {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.slot.booked {
+    background-color: #ff4d4d;
+    color: white;
+}
+
+.slot.available {
+    background-color: #007bff;
+    color: white;
+}
+
+/* قسم التقارير */
+.report-section {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.report-section h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.report-section select, .report-section button {
+    width: auto;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.report-section button {
+    background-color: #ffc107;
+    color: #333;
+}
+
+.report-section button:hover {
+    background-color: #e0a800;
+}
+
+#report-results {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.report-summary {
+    margin: 10px 0;
+    font-weight: bold;
+    text-align: left;
+}
+
+/* الفاتورة */
+.invoice {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+}
+.invoice h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #007bff;
+}
+.invoice table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+.invoice table, .invoice th, .invoice td {
+    border: 1px solid #ddd;
+}
+.invoice th, .invoice td {
+    padding: 8px;
+    text-align: center;
+}
+.invoice th {
+    background-color: #007bff;
+    color: white;
+}
+.invoice h3 {
+    text-align: left;
+    margin-top: 10px;
+}
+
+/* إدارة الملاعب */
+.fields-management {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.fields-management h2 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+#fields-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+#fields-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    flex-wrap: wrap;
+}
+
+#fields-list li:last-child {
+    border-bottom: none;
+}
+
+#fields-list .field-name {
+    font-weight: bold;
+    min-width: 150px;
+}
+
+#fields-list .field-price {
+    color: #555;
+    flex: 1;
+}
+
+#fields-list button {
+    padding: 5px 10px;
+    width: auto;
+}
+
+/* التكلفة التقديرية */
+.estimated-cost {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #28a745;
+    text-align: left;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #e9f7e9;
+    border-radius: 5px;
+}
+
+/* الملخص السريع */
+.quick-summary {
+    display: flex;
+    justify-content: space-around;
+    background-color: #007bff;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* خيارات الحجز المتكرر */
+.recurring-options {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+}
+.recurring-options label {
+    margin-left: 10px;
+}
+#recurring-details {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+/* قسم الرسوم البيانية */
+.chart-section {
+    margin-top: 30px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.chart-section h2 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+.chart-section canvas {
+    max-width: 100%;
+    height: auto;
+}
+.chart-controls {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+}
+.chart-controls select, .chart-controls button {
+    width: auto;
+    margin: 0;
+}
+
+/* تحسين التجاوب للشاشات الصغيرة */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    table, th, td {
+        font-size: 0.9rem;
+    }
+
+    .timeline {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+
+    #fields-list li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #fields-list .field-name, #fields-list .field-price {
+        min-width: auto;
+    }
+
+    .report-section select, .report-section button {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .quick-summary {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+}

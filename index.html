@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق حجز وإدارة الملاعب والمنشآت الرياضية</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- SheetJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Firebase (اختياري) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (Notification.permission !== 'granted') {
+                Notification.requestPermission();
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>تطبيق حجز وإدارة الملاعب والمنشآت الرياضية</h1>
+    
+    <!-- ملخص سريع -->
+    <div class="quick-summary" id="quick-summary">
+        <div>إجمالي حجوزات اليوم: <span id="today-bookings">0</span></div>
+        <div>إيرادات اليوم: <span id="today-revenue">0</span></div>
+    </div>
+  
+    <!-- قسم إدارة الملاعب -->
+    <div class="fields-management">
+        <h2>إدارة الملاعب</h2>
+        <label for="toggle-fields">إظهار/إخفاء قائمة الملاعب</label>
+        <input type="checkbox" id="toggle-fields" checked>
+        <input type="text" id="new-field-name" placeholder="أدخل اسم الملعب الجديد">
+        <input type="number" id="new-field-morning-price" placeholder="السعر للفترة الصباحية (7:00 - 17:00)">
+        <input type="number" id="new-field-evening-price" placeholder="السعر للفترة المسائية (17:00 - 12:00)">
+        <button onclick="addField()">إضافة ملعب</button>
+        <ul id="fields-list"></ul>
+    </div>
+
+    <div class="container">
+        <!-- نموذج الحجز -->
+        <form id="booking-form">
+            <label for="field">اختيار الملعب</label>
+            <select id="field" required>
+                <!-- تملأ عبر JavaScript -->
+            </select>
+            <label for="name">اسم الحاجز</label>
+            <input type="text" id="name" placeholder="أدخل الاسم" required>
+            <label for="phone">رقم الهاتف</label>
+            <input type="text" id="phone" placeholder="أدخل رقم الهاتف" required>
+            <label for="activity-type">نوع النشاط</label>
+            <input type="text" id="activity-type" placeholder="أدخل نوع النشاط" required>
+            
+            <!-- خيارات الحجز المتكرر -->
+            <div class="recurring-options">
+                <label>
+                    <input type="checkbox" id="recurring-checkbox"> حجز متكرر
+                </label>
+                <div id="recurring-details" style="display:none; margin-top:10px;">
+                    <label for="recurring-frequency">التكرار:</label>
+                    <select id="recurring-frequency">
+                        <option value="daily">يومي</option>
+                        <option value="weekly">أسبوعي</option>
+                        <option value="monthly">شهري</option>
+                    </select>
+                    <label for="recurring-count">عدد المرات:</label>
+                    <input type="number" id="recurring-count" min="1" value="1">
+                    <div style="margin-top:10px;">
+                        <label for="recurring-total-price">السعر الإجمالي للحجز المتكرر (اختياري):</label>
+                        <input type="number" id="recurring-total-price" placeholder="اتركه فارغاً للحساب التلقائي" min="0" step="0.01">
+                    </div>
+                </div>
+            </div>
+
+            <label for="date-from">تاريخ ووقت البداية</label>
+            <input type="datetime-local" id="date-from" required>
+            <label for="date-to">تاريخ ووقت النهاية</label>
+            <input type="datetime-local" id="date-to" required>
+            
+            <!-- عرض التكلفة التقديرية -->
+            <div class="estimated-cost" id="estimated-cost">التكلفة التقديرية: 0</div>
+            
+            <input type="hidden" id="edit-index" value="">
+            <input type="hidden" id="original-field" value="">
+            <button type="button" onclick="saveBooking()">إضافة / تحديث الحجز</button>
+        </form>
+
+        <!-- أزرار التصدير والاستيراد -->
+        <div class="export-import-buttons">
+            <button onclick="exportToExcel()" id="export-excel-btn">تصدير إلى إكسل</button>
+            <button onclick="exportToPDF()" id="export-pdf-btn">تصدير إلى PDF</button>
+            <button onclick="saveAsJson()" id="save-json-btn">حفظ البيانات (Save As)</button>
+            <input type="file" id="file-input" accept=".json" style="display:none;" onchange="importFromJson(event)">
+            <button onclick="document.getElementById('file-input').click()">استيراد البيانات</button>
+            <!-- أزرار Firebase (اختياري) -->
+            <button onclick="saveToFirebase()" id="firebase-save-btn">حفظ إلى Firebase</button>
+            <button onclick="loadFromFirebase()" id="firebase-load-btn">تحميل من Firebase</button>
+        </div>
+
+        <!-- فلتر التاريخ والملعب -->
+        <label for="date-select">اختر التاريخ:</label>
+        <input type="date" id="date-select" onchange="updateTable(); updateTimeline(); updateQuickSummary();">
+
+        <select id="field-select" onchange="updateTable(); updateTimeline(); updateQuickSummary();">
+            <option value="">اختر الملعب</option>
+        </select>
+
+        <!-- حقل البحث في الجدول -->
+        <input type="text" id="search-input" placeholder="بحث بالاسم أو رقم الهاتف أو النشاط" onkeyup="filterTable()">
+
+        <!-- جدول الحجوزات -->
+        <table id="booking-table">
+            <thead>
+                <tr>
+                    <th>اسم الحاجز</th>
+                    <th>رقم الهاتف</th>
+                    <th>نوع النشاط</th>
+                    <th>وقت البداية</th>
+                    <th>وقت النهاية</th>
+                    <th>إجراءات</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <!-- Timeline Section -->
+        <div class="timeline" id="timeline"></div>
+
+        <!-- Report Section -->
+        <div class="report-section">
+            <h2>تقرير الحجوزات</h2>
+            
+            <label for="report-field">اختر الملعب:</label>
+            <select id="report-field">
+                <option value="">اختر الملعب</option>
+            </select>
+
+            <label for="report-period">اختر الفترة:</label>
+            <select id="report-period">
+                <option value="daily">يومي</option>
+                <option value="weekly">أسبوعي</option>
+                <option value="monthly">شهري</option>
+                <option value="custom">محدد</option>
+            </select>
+
+            <div id="custom-date-range" style="display: none; margin-top: 10px;">
+                <label for="report-from-date">من:</label>
+                <input type="date" id="report-from-date">
+                <label for="report-to-date">إلى:</label>
+                <input type="date" id="report-to-date">
+            </div>
+
+            <button onclick="generateReport()">عرض التقرير</button>
+            <button onclick="exportReportToExcel()">تصدير التقرير إلى إكسل</button>
+        </div>
+        <div id="report-results"></div>
+
+        <!-- قسم الرسوم البيانية -->
+        <div class="chart-section">
+            <h2>التحليلات</h2>
+            <div class="chart-controls">
+                <div>
+                    <label>عرض:</label>
+                    <select id="chart-view-mode">
+                        <option value="all">كل الملاعب</option>
+                        <option value="single">ملعب محدد</option>
+                    </select>
+                </div>
+                <div>
+                    <label>الفترة:</label>
+                    <select id="chart-period">
+                        <option value="week">أسبوع</option>
+                        <option value="month">شهر</option>
+                        <option value="year">سنة</option>
+                    </select>
+                </div>
+                <div id="chart-field-select-container" style="display:none;">
+                    <label>اختر الملعب:</label>
+                    <select id="chart-field-select"></select>
+                </div>
+                <button onclick="updateChart()">تحديث الرسم البياني</button>
+            </div>
+            <canvas id="revenueChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
